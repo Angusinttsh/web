@@ -125,6 +125,9 @@
   .footer-card .name { font-family: var(--serif); font-weight: 900; font-size: 28px; line-height: 1.4; }
   .footer-card .en { color: var(--muted); font-size: 16px; letter-spacing: .04em; }
   .footer-bottom { text-align: center; color: var(--muted); font-size: 14px; padding: 0 24px 28px; }
+  .footer-link { display: flex; align-items: center; gap: 28px; color: inherit; text-decoration: none; }
+  .footer-link:hover .name { color: var(--accent); }
+  .footer-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; }
 
   /* ========== 手機版 ========== */
   @media (max-width: 960px) {
@@ -284,7 +287,9 @@
     <div>
       <div class="name">午後倦容</div>
       <div class="en">Five O'Clock Shadow</div>
-  </div>
+    </div>
+  </a>
+</div>
   <div class="footer-bottom">並且盡心、盡智、盡力愛他，又愛人如己，就比一切燔祭和各樣祭祀好的多。</div>
 </footer>
 
