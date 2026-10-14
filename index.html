@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>虞恆弟兄個人網站</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #111111;
+    --muted: #666666;
+    --line: #e4e4e4;
+    --accent: #930000;
+    --header-h: 76px;
+    --serif: "Noto Serif TC", "Songti TC", "PMingLiU", serif;
+    --sans: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; min-height: 100vh; display: flex; flex-direction: column;
+    background: var(--bg); color: var(--fg);
+    font-family: var(--sans); line-height: 1.9; font-size: 17px;
+  }
+
+  /* ========== 固定頂部 ========== */
+  .site-header {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--bg); border-bottom: 1px solid var(--line);
+  }
+  .header-inner {
+    width: 100%; margin: 0; padding: 0 24px 0 16px;
+    min-height: var(--header-h);
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px;
+  }
+  .brand { display: flex; align-items: center; gap: 14px; text-decoration: none; color: var(--fg); }
+  .brand img { height: 52px; width: 52px; object-fit: contain; flex: none; }
+  .brand span { font-family: var(--serif); font-weight: 900; font-size: 26px; letter-spacing: .04em; white-space: nowrap; }
+
+  .tabs { display: flex; gap: 6px; }
+  .tab {
+    appearance: none; background: none; border: 0; cursor: pointer;
+    font: 500 16px var(--sans); color: var(--muted);
+    padding: 8px 16px; border-bottom: 2px solid transparent;
+    transition: color .2s, border-color .2s;
+  }
+  .tab:hover { color: var(--fg); }
+  .tab[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--accent); font-weight: 700; }
+  .tab:focus-visible, .toc a:focus-visible, .brand:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  /* ========== 主內容 ========== */
+  main {
+    flex: 1; width: 100%; max-width: 1020px; margin: 0 auto;
+    padding: 56px 24px 96px;
+    display: grid; grid-template-columns: minmax(0, 1fr) 220px; gap: 48px; align-items: start;
+  }
+  .page { display: none; }
+  .page.active { display: block; }
+  .page-title {
+    font-family: var(--serif); font-weight: 900; font-size: 44px; margin: 0 0 8px; line-height: 1.3;
+  }
+  .page-title::after { content: ""; display: block; width: 48px; height: 4px; background: var(--accent); margin-top: 16px; }
+  .page section { padding-top: 48px; scroll-margin-top: calc(var(--header-h) + 16px); max-width: 720px; }
+  .page h2 { font-family: var(--serif); font-weight: 600; font-size: 28px; margin: 0 0 16px; line-height: 1.4; }
+  .page p { margin: 0 0 1em; }
+
+  .page h4 { margin: -8px 0 16px; font: 400 14px var(--sans); color: var(--muted); letter-spacing: .06em; }
+  .comments { margin-top: 20px; }
+  .c-toggle {
+    font: 500 15px var(--sans); padding: 6px 18px; cursor: pointer;
+    background: var(--bg); color: var(--fg); border: 1px solid var(--fg); border-radius: 999px;
+    transition: background .2s, color .2s, border-color .2s;
+  }
+  .c-toggle::after { content: " ▾"; }
+  .c-toggle[aria-expanded="true"]::after { content: " ▴"; }
+  .c-toggle:hover, .c-toggle[aria-expanded="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .c-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .c-panel { padding-top: 8px; }
+  .c-panel[hidden] { display: none; }
+  .c-item { padding: 10px 0; border-bottom: 1px dashed var(--line); font-size: 15px; line-height: 1.7; }
+  .c-meta { color: var(--muted); font-size: 13px; }
+  .c-meta b { color: var(--fg); margin-right: 8px; }
+  .c-text { white-space: pre-wrap; word-break: break-word; }
+  .c-form { display: grid; gap: 8px; margin-top: 14px; }
+  .c-form input[type=text], .c-form textarea {
+    font: inherit; font-size: 15px; padding: 8px 12px; border: 1px solid var(--fg); border-radius: 10px; background: var(--bg); color: var(--fg);
+  }
+  .c-form textarea { min-height: 80px; resize: vertical; }
+  .c-form button {
+    justify-self: start; font: 500 15px var(--sans); padding: 8px 20px; cursor: pointer;
+    background: var(--fg); color: var(--bg); border: 1px solid var(--fg); border-radius: 999px;
+  }
+  .c-form button:hover { background: var(--accent); border-color: var(--accent); }
+  .c-form button:disabled { opacity: .5; cursor: default; }
+  .c-form .hp { position: absolute; left: -9999px; }
+  .c-note { font-size: 13px; color: var(--muted); }
+  .c-note.err { color: var(--accent); }
+  
+  /* ========== 右側目錄方框 ========== */
+  .toc {
+    position: sticky; top: calc(var(--header-h) + 32px);
+    border: 1px solid var(--fg); border-radius: 16px; padding: 20px 22px;
+  }
+  .toc h3 { margin: 0 0 12px; font-size: 15px; font-weight: 700; color: var(--muted); }
+  .toc ul { list-style: none; margin: 0; padding: 0; }
+  .toc a {
+    display: block; padding: 6px 0 6px 14px; margin-left: -2px;
+    border-left: 2px solid var(--line);
+    color: var(--muted); text-decoration: none; font-size: 15px; line-height: 1.6;
+    transition: color .2s, border-color .2s;
+  }
+  .toc a:hover { color: var(--fg); }
+  .toc a.current { color: var(--accent); border-left-color: var(--accent); font-weight: 700; }
+
+  /* ========== 底部保留頁 ========== */
+  .site-footer { border-top: 1px solid var(--line); }
+  .footer-card {
+    max-width: 1200px; margin: 0 auto; padding: 56px 24px 32px;
+    display: flex; align-items: center; justify-content: center; gap: 28px;
+  }
+  .footer-card img { height: 120px; width: auto; flex: none; }
+  .footer-card .name { font-family: var(--serif); font-weight: 900; font-size: 28px; line-height: 1.4; }
+  .footer-card .en { color: var(--muted); font-size: 16px; letter-spacing: .04em; }
+  .footer-bottom { text-align: center; color: var(--muted); font-size: 14px; padding: 0 24px 28px; }
+
+  /* ========== 手機版 ========== */
+  @media (max-width: 960px) {
+    :root { --header-h: 116px; }
+    .header-inner { grid-template-columns: 1fr; gap: 0; padding: 8px 16px 0; }
+    .brand span { font-size: 22px; }
+    .brand img { height: 40px; width: 40px; }
+    .tabs { overflow-x: auto; justify-content: flex-start; }
+    .tab { white-space: nowrap; padding: 8px 12px; }
+    main { grid-template-columns: 1fr; gap: 0; padding-top: 24px; }
+    .toc { order: -1; position: static; margin-bottom: 8px; }
+    .page-title { font-size: 34px; }
+  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+<!-- ===== 固定頂部 ===== -->
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="#home" data-go="home">
+      <img src="images/tree.png" alt="">
+      <span>虞恆弟兄個人網站</span>
+    </a>
+    <nav class="tabs" role="tablist" aria-label="主要分頁">
+      <button class="tab" role="tab" data-page="home">主頁</button>
+      <button class="tab" role="tab" data-page="thoughts">思想</button>
+      <button class="tab" role="tab" data-page="experience">經歷</button>
+      <button class="tab" role="tab" data-page="works">貼文</button>
+      <button class="tab" role="tab" data-page="favorites">好物分享</button>
+    </nav>
+    <div></div>
+  </div>
+</header>
+
+<!-- ===== 內容區 ===== -->
+<main>
+  <div class="content">
+
+    <article class="page" id="home">
+      <h1 class="page-title">主頁</h1>
+      <section><h2>關於這個網站</h2>
+        <p>這是一個為了午後倦容的"製作個人網站企劃"所打造的個人網站，基本上毫無章法，隨便看看吧。</p>
+        <p>虞恆是一個什麼並不重要，虞恆不喜歡被標籤，虞恆也不喜歡被"不喜歡被標籤"標籤，但有時候他會妥協。</p></section>
+      <section><h2>簡介？</h2>
+        <p>孟子：人之患，在好為人師</p>
+        <p>吾十有八而志於學，不求與同，只求不落人後</p></section>
+      <section><h2>聯絡方式</h2>
+        <p><strong>email：</strong>anginhs1129@gmail.com / 41400132e@gapps.ntnu.edu.tw </p>
+        <p><strong>Line：</strong>angusinttsh / 不讀不回</p></section>
+        <p><strong>IG：</strong>Angus111222 / 時常懶著回追，隨便放放唱歌的貼文。</p>
+        <p><strong>Discord：</strong>ang0#4173 / 還是用這個和我溝通比較有料。</p>
+    </article>
+
+    <article class="page" id="thoughts">
+      <h1 class="page-title">思想與思辯</h1>
+      <section><h2>思想傾向</h2>
+        <p><strong>後現代：</strong></p>
+        <p>老子：道可道，非常道。</p>
+        <p>真理就算存在，也不可能被完全掌握，解構、反思與重審，是避免自己陷入"自以為瞭解絕對真理"的絕妙方法</p>
+        <p><strong>中庸：</strong></p>
+        <p>子曰：「舜其大知也與！舜好問而好察邇言，隱惡而揚善，執其兩端，用其中於民，其斯以為舜乎！」</p>
+        <p>或許中庸是一個好的後現代主張，學習聆聽與了解不同人的觀點，並看見他人的善意，而在多元的觀點中尋找那微妙的平衡，是為中庸</p>
+        <p><strong>存在主義：</strong></p>
+        <p>特土良：因其荒謬，所以信仰。</p>
+        <p>尼采：人的精神有三種境界：駱駝、獅子和嬰兒。</p>
+        <p>走到理性的邊界，只有一片虛空，在理性的邊界之外還有陸地嗎？唯有縱身一躍才能明白。懷疑之後的新世界，是允許自己活在當下，享受生命力的釋放。</p>
+        <p><strong>基督寬容主義：</strong></p>
+        <p>愛是恆久忍耐，又有恩慈，凡事包容，凡事相信，凡事盼望，凡事忍耐。愛是永不止息。</p>
+        <p>約翰：沒有愛心的，就不認識神，因為神就是愛。</p>
+        <p>有人說愛是需要建立在真理之上的，即使以基督的觀點，這是也是絕對的錯誤，第一他認為他可以掌握洞悉上帝；第二他不相信愛即真理。</p>
+        <p><strong>實踐思維：</strong></p></section>
+        <p>沙特：行動吧，因為只有在行動中才能說明你是什麼。</p>
+        <p>老子：千里之行，始於足下。</p>
+        <p>人生中多數的思想轉變，都源於生活中的經歷，所以我選擇去實踐、去經歷，並在與世界連結之處，體悟意義。</p>
+        <section><h2>思辨中的命題 / 可能的畢業專題、論文題目？</h2>
+        <p><strong>教育哲學的教育的哲學：</strong></p>
+        <p>哲學議題，教育哲學是否重要？目的為何？教育哲學的教育是否重要？教育哲學的教育目的為何？教育哲學的教育哲學是否重要？</p>
+        <p><strong>圖論演算法於教育中的應用：</strong></p>
+        <p>社會學議題，想到如過可以用圖論來分析班級關係，或許可以挖出很多意想不到的現象。</p></section>
+        <p><strong>理工社群中的女性困境：</strong></p>
+        <p>社會學議題，作為裡工人轉教育人，能明顯感受到一些現存的女性困境，用性別刻板印象或社會再製等巨觀意識或許難以解釋的現象。</p>
+        <p>不過這一議題牽涉性別，就害的我實在不太想碰。</p>
+      <section><h2>政治立場</h2>
+        <p><strong>中立悲觀派：</strong></p>
+        <p>對所有政治社群與領袖人物持悲觀的厭棄。</p>
+        <p><strong>專業官僚派：</strong></p>
+        <p>對無政治黨派或較不明顯的政治人物較無厭惡，若是專業官僚則稍微喜歡。</p></section>
+    </article>
+
+    <article class="page" id="experience">
+      <h1 class="page-title">經歷與標籤</h1>
+      <section><h2>經歷</h2>
+        <p><strong>2006年</strong> 出生</p>
+        <p><strong>2019年</strong> 幸安國小畢業</p>
+        <p><strong>2022年</strong> 懷生國中畢業</p>
+        <p><strong>2023年</strong> 午後倦容創立</p>
+        <p><strong>2025年</strong> 大同高中肄業</p>
+        <p><strong>2026年</strong> 臺灣師範大學教育學院學士就讀</p></section>
+      <section><h2>承認的標籤</h2>
+        <p>基督徒</p>
+        <p>臺灣師範大學教育學院學士在讀生</p>
+        <p>排球愛好者</p>
+        <p>午後倦容創始成員</p></section>
+      <section><h2>其他有趣的經歷</h2>
+        <p>國中是生科競賽玩家。</p>
+        <p>國三回歸教會生活</p>
+        <p>大學以完攀教哲、教社、教心、教政四本教科書</p>
+        <p>nkec青少契國中輔導</p>
+        <p>系排的隱形球員</p>
+        <p>午後激盪的設計師之一</p></section>
+    </article>
+
+    <article class="page" id="works">
+      <h1 class="page-title">貼文</h1>
+      <div id="posts-root">
+      <section><h2>範例貼文一</h2><h4>2026/10/12</h4>
+        <p>離線時會顯示這裡的內容。連上雲端試算表後，這裡會自動換成試算表中的貼文。</p></section>
+      </div>
+      </article>
+
+    <article class="page" id="favorites">
+      <h1 class="page-title">好物分享</h1>
+      <section><h2>書籍推薦</h2>
+        <p><strong>愛的藝術：</strong>佛洛姆著，集合心理學、社會學與哲學，深度解構"愛"，並推崇愛的實踐藝術。</p>
+        <p><strong>孟子：</strong>孟子的觀點並非完美，甚至有些殘缺和矛盾，但孟子絕對是易於上手的文言文著作，推薦將其作為你入門東哲的首部思想著作。</p>
+        <p><strong>桌遊教養全攻略：</strong>現實的說，很難有教材可以在幾乎所有面向上都足夠完美，但這終究只是很難。</p></section>
+      <section><h2>遊戲推薦</h2>
+        <p><strong>骰子浪遊者：</strong>卡牌爬塔肉鴿遊戲，卻用骰子重新予以詮釋，可以玩出很多意想不到的可能性。</p>
+        <p><strong>午後激盪：</strong>作為午後倦容少數完整的作品，遊戲中將鬥智元素拉至最滿，推薦於傍晚遊玩，享受對決後的滿足。</p></section>
+      <section><h2>歌曲推薦</h2>
+        <p><strong>Blowin' in the Wind / </strong>The Petersens版本演唱的尤為動聽，當人滿感受到那種仙境中的平安與完滿，就會明白歌詞的意義了。</p>
+        <p><strong>One More Day / </strong>信仰者的敬虔。</p>
+        <p><strong>CDC成都集團2020 Cypher / </strong>我聽過印象最深刻的嘻哈Cypher，我好像就是因為這首歌開始聽嘻哈的。</p>
+        <p><strong>2021政大黑音 X 台大嘻研 / </strong>也是一個很棒的嘻哈Cypher。</p>
+        <p><strong>明天會更好 / </strong>台灣音樂史的奇蹟，在最悲痛的時候，人們如何重燃希望？</p>
+        <p><strong>雲上太陽 / </strong>雲上太陽，它總不改變。</p>
+        <p><strong>莉莉安 / </strong>可曾在宋冬野毫無章法卻迷人的歌聲中沉淪。</p>
+        <p><strong>Tokyo Calling / </strong>緊急！</p></section>
+    </article>
+
+  </div>
+
+  <!-- 右側目錄（由 JS 依當前分頁的大標題自動產生） -->
+  <aside class="toc" aria-label="本頁目錄">
+    <h3>本頁目錄</h3>
+    <ul id="toc-list"></ul>
+  </aside>
+</main>
+
+<!-- ===== 底部保留頁 ===== -->
+<footer class="site-footer">
+  <div class="footer-card">
+    <img src="images/icon.png" alt="">
+    <div>
+      <div class="name">午後倦容</div>
+      <div class="en">Five O'Clock Shadow</div>
+    </div>
+  </div>
+  <div class="footer-bottom">並且盡心、盡智、盡力愛他，又愛人如己，就比一切燔祭和各樣祭祀好的多。</div>
+</footer>
+
+<script>
+  const pages = [...document.querySelectorAll('.page')];
+  const tabs = [...document.querySelectorAll('.tab')];
+  const tocList = document.getElementById('toc-list');
+  let observer;
+
+  function showPage(id, pushHash = true) {
+    if (!document.getElementById(id)) id = 'home';
+    pages.forEach(p => p.classList.toggle('active', p.id === id));
+    tabs.forEach(t => t.setAttribute('aria-selected', t.dataset.page === id));
+    if (pushHash) history.replaceState(null, '', '#' + id);
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    buildToc(id);
+  }
+
+  function buildToc(id) {
+    const heads = [...document.querySelectorAll('#' + id + ' section h2')];
+    tocList.innerHTML = '';
+    heads.forEach((h, i) => {
+      h.parentElement.id = id + '-s' + i;
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = '#' + h.parentElement.id;
+      a.textContent = h.textContent;
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        h.parentElement.scrollIntoView({ behavior: 'smooth' });
+      });
+      li.appendChild(a);
+      tocList.appendChild(li);
+    });
+    // 捲動時標示目前閱讀的段落
+    if (observer) observer.disconnect();
+    observer = new IntersectionObserver(entries => {
+      entries.forEach(en => {
+        if (en.isIntersecting) {
+          tocList.querySelectorAll('a').forEach(a =>
+            a.classList.toggle('current', a.getAttribute('href') === '#' + en.target.id));
+        }
+      });
+    }, { rootMargin: '-30% 0px -60% 0px' });
+    heads.forEach(h => observer.observe(h.parentElement));
+    const first = tocList.querySelector('a'); if (first) first.classList.add('current');
+  }
+
+  tabs.forEach(t => t.addEventListener('click', () => showPage(t.dataset.page)));
+  document.querySelector('.brand').addEventListener('click', e => { e.preventDefault(); showPage('home'); });
+
+  showPage(location.hash.slice(1) || 'home', false);
+</script>
+<script src="posts.js"></script>
+</body>
+</html>
